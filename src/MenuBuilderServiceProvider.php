@@ -2,6 +2,7 @@
 
 namespace Outl1ne\MenuBuilder;
 
+use Laravel\Nova\Events\ServingNova;
 use Laravel\Nova\Nova;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -48,6 +49,12 @@ class MenuBuilderServiceProvider extends ServiceProvider
                 ? Validator::make([$attribute => $value], ['slug' => "unique:$uniqueParams"])->validate()
                 : true;
         }, '');
+
+        Nova::serving(function (ServingNova $event) {
+            Nova::provideToScript([
+                'edit_mode' => config('nova-menu.edit_mode'),
+            ]);
+        });
     }
 
     public function register()

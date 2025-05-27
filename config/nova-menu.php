@@ -7,7 +7,6 @@ return [
     |------------------|
     */
 
-
     /*
     |--------------------------------------------------------------------------
     | Table names
@@ -16,7 +15,6 @@ return [
 
     'menus_table_name' => 'nova_menu_menus',
     'menu_items_table_name' => 'nova_menu_menu_items',
-
 
     /*
     |--------------------------------------------------------------------------
@@ -29,7 +27,6 @@ return [
     */
 
     'locales' => ['en_US' => 'English'],
-
 
     /*
     |--------------------------------------------------------------------------
@@ -87,7 +84,6 @@ return [
 
     'controller' => Outl1ne\MenuBuilder\Http\Controllers\MenuController::class,
 
-
     /*
     |--------------------------------------------------------------------------
     | Resource
@@ -98,7 +94,6 @@ return [
     */
 
     'resource' => Outl1ne\MenuBuilder\Nova\Resources\MenuResource::class,
-
 
     /*
     |--------------------------------------------------------------------------
@@ -111,7 +106,6 @@ return [
 
     'menu_model' => Outl1ne\MenuBuilder\Models\Menu::class,
 
-
     /*
     |--------------------------------------------------------------------------
     | MenuItem Model
@@ -122,7 +116,6 @@ return [
     */
 
     'menu_item_model' => Outl1ne\MenuBuilder\Models\MenuItem::class,
-
 
     /*
     |--------------------------------------------------------------------------
@@ -135,5 +128,11 @@ return [
 
     'auto_load_migrations' => true,
 
-
+    /*
+    |--------------------------------------------------------------------------
+    | MNG enhancement
+    |--------------------------------------------------------------------------
+    |
+    */
+    'edit_mode' => 'inline', // popup, inline
 ];

@@ -58,7 +58,7 @@
 
 <script>
 import api from '../api';
-import { FormField } from 'laravel-nova';
+import {FormField} from 'laravel-nova';
 import MenuBuilderHeader from './core/MenuBuilderHeader';
 import UpdateMenuItemModal from './modals/UpdateMenuItemModal';
 import DeleteMenuItemModal from './modals/DeleteMenuItemModal';
@@ -156,11 +156,14 @@ export default {
     },
 
     async editMenu(item) {
-      this.update = true;
-      const menuItem = (await api.getMenuItem(item.id)).data;
-      this.newItem = menuItem;
-      this.showAddModal = true;
-      this.linkType = this.menuItemTypes.find(lt => lt.class === this.newItem.class) || {};
+      if (Nova.config('edit_mode') === 'popup') {
+        this.update = true;
+        this.newItem = (await api.getMenuItem(item.id)).data;
+        this.showAddModal = true;
+        this.linkType = this.menuItemTypes.find(lt => lt.class === this.newItem.class) || {};
+      } else {
+        Nova.visit(`/resources/nova-menu-items/${item.id}/edit`);
+      }
     },
 
     removeMenu(item) {
