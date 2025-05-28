@@ -13,10 +13,12 @@ class MenuItem extends Model
 
     protected $casts = [
         'enabled' => 'boolean',
-        'data' => 'array'
+        'data' => 'array',
     ];
 
     protected $appends = ['enabledClass', 'displayValue', 'fields'];
+
+    public $arrayableFields = [];
 
     public function __construct(array $attributes = [])
     {
@@ -107,5 +109,16 @@ class MenuItem extends Model
             $field->resolve($this);
         }
         return $fields;
+    }
+
+    /**
+     * @param array $fields
+     * @return $this
+     */
+    public function setArrayableFields(array $fields): self
+    {
+        $this->arrayableFields = $fields;
+
+        return $this;
     }
 }

@@ -126,16 +126,21 @@ class MenuController extends Controller
      **/
     public function createMenuItem(MenuItemFormRequest $request)
     {
-
         $menuItemModel = MenuBuilder::getMenuItemClass();
 
         $data = $request->getValues();
         $data['order'] = $menuItemModel::max('id') + 1;
 
         $model = new $menuItemModel;
+
         foreach ($data as $key => $value) {
-            $model->{$key} = $value;
+            if (in_array($key, $model->arrayableFields ??  [])) {
+                $model->{$key} = json_decode($value, true);
+            } else {
+                $model->{$key} = $value;
+            }
         }
+
         $model->save();
 
         return response()->json(['success' => true], 200);

@@ -60,10 +60,10 @@ class MenuBuilder extends Tool
         $handleField = function (&$field) {
             if (!empty($field->attribute) && ($field->attribute !== 'ComputedField')) {
                 if (empty($field->panel)) {
-                    $field->attribute = 'data->' . $field->attribute;
+                    $field->attribute = Str::startsWith($field->attribute, 'data->') ? $field->attribute : 'data->' . $field->attribute;
                 } else {
                     $sanitizedPanel = nova_menu_builder_sanitize_panel_name($field->panel);
-                    $field->attribute = 'data->' . $sanitizedPanel . '->' . $field->attribute;
+                    $field->attribute = Str::startsWith($field->attribute, 'data->') ? $field->attribute : 'data->' . $sanitizedPanel . '->' . $field->attribute;
                 }
             }
 
