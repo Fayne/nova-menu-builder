@@ -92,7 +92,7 @@ export default {
       value: '',
       target: '_self',
       menu_id: null,
-      enabled: true,
+      enabled: false,
       classProp: [],
     },
     menuItems: [],

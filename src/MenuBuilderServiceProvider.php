@@ -53,6 +53,7 @@ class MenuBuilderServiceProvider extends ServiceProvider
         Nova::serving(function (ServingNova $event) {
             Nova::provideToScript([
                 'edit_mode' => config('nova-menu.edit_mode'),
+                'copyable' => config('nova-menu.copyable'),
             ]);
         });
     }

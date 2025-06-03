@@ -48,6 +48,7 @@
           </span>
 
           <span
+            v-if="this.copyable"
             :title="__('novaMenuBuilder.duplicate')"
             @click.prevent="$emit('duplicateMenuItem', item)"
             class="mt-2 cursor-pointer text-gray-500 dark:text-gray-400 hover:[&:not(:disabled)]:text-primary-500 dark:hover:[&:not(:disabled)]:text-primary-500"
@@ -88,6 +89,9 @@ export default {
     getIconName() {
       return item => (this.isCascadeOpen(item) ? 'SortDescending' : 'ViewList');
     },
+    copyable() {
+      return Nova.config('copyable');
+    }
   },
   components: {
     VueNestable,

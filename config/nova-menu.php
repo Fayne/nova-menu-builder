@@ -135,4 +135,5 @@ return [
     |
     */
     'edit_mode' => 'inline', // popup, inline
+    'copyable' => false,
 ];
