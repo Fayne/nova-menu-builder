@@ -39,6 +39,10 @@
         </div>
 
         <div class="buttons o1-gap-x-2 md:o1-w-1/3 o1-flex o1-justify-end o1-content-center">
+          <span class="mt-2 text-gray-500 dark:text-gray-400">
+            <Icon v-if="item.exception" name="x-circle" type="solid" class="text-red-500" />
+          </span>
+
           <span
             :title="__('novaMenuBuilder.edit')"
             @click.prevent="$emit('editMenu', item)"
