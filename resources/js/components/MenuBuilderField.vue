@@ -190,7 +190,7 @@ export default {
         name: null,
         value: '',
         target: '_self',
-        enabled: true,
+        enabled: false,
         menu_id: this.resourceId,
       };
 
