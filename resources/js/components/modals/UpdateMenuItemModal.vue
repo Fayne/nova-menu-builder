@@ -52,12 +52,9 @@
           <template #field>
             <SelectControl
               v-model="linkType.class"
-              :options="menuItemTypes.map(val => ({ value: val.class, label: __(val.name) }))"
-              @change="e => $emit('onLinkTypeUpdate', e)"
-            >
-              <option disabled="disabled" selected="selected" value="">
-                {{ __('novaMenuBuilder.chooseMenuItemType') }}
-              </option>
+              :options="[{ value: '', label: __('novaMenuBuilder.chooseMenuItemType'), disabled: true }, ...menuItemTypes.map(val => ({
+    value: val.class, label: __(val.name)}))]"
+              @change="e => $emit('onLinkTypeUpdate', e)">
             </SelectControl>
           </template>
         </DefaultField>
@@ -243,6 +240,19 @@ export default {
         }
       });
     },
+
+    menuItemTypes: {
+      handler(types) {
+        if (types && types.length === 1) {
+          this.linkType.class = types[0].class;
+          this.$emit('onLinkTypeUpdate', types[0].class);
+        } else {
+          this.linkType.class = '';
+        }
+      },
+      immediate: true, // 页面加载时也执行一次
+      deep: false      // 不需要深度监听
+    }
   },
 
   mounted() {

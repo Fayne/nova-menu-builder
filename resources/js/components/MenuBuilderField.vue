@@ -261,7 +261,13 @@ export default {
     },
 
     updateLinkType(event) {
-      this.linkType = this.menuItemTypes.find(type => type.class === event.target.value) || {};
+      const typeClass = event?.target?.value || event;
+      const selectedType = this.menuItemTypes.find(type => type.class === typeClass) || null;
+
+      if (selectedType) {
+        this.linkType = Object.assign({}, selectedType);
+      }
+
       this.newItem.value = '';
     },
   },
