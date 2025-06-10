@@ -233,7 +233,12 @@ export default {
         await api.saveItems(this.resourceId, this.menuItems);
         Nova.success(this.__('novaMenuBuilder.toastReorderSuccess'));
       } catch (e) {
-        Nova.error(this.__('novaMenuBuilder.serverError'));
+        const message = e?.response?.data?.message;
+        if (message) {
+          Nova.error(message);
+        } else {
+          Nova.error(this.__('novaMenuBuilder.serverError'));
+        }
       }
     },
 
