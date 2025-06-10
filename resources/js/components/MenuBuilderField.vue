@@ -44,7 +44,7 @@
       @confirmItemCreate="confirmItemCreate"
       @onLinkModelUpdate="updateLinkModel"
       @onLinkTypeUpdate="updateLinkType"
-      @updateItem="updateItem"
+      @updateItem="debouncedUpdateMenu"
     />
 
     <delete-menu-item-modal
@@ -58,6 +58,7 @@
 
 <script>
 import api from '../api';
+import debounce from 'lodash/debounce';
 import {FormField} from 'laravel-nova';
 import MenuBuilderHeader from './core/MenuBuilderHeader';
 import UpdateMenuItemModal from './modals/UpdateMenuItemModal';
@@ -109,6 +110,16 @@ export default {
     this.$parent.$el.classList.remove('py-3', 'px-6');
 
     this.refreshData();
+  },
+
+  created() {
+    this.debouncedUpdateMenu = debounce(this.updateMenu, 500);
+  },
+
+  beforeUnmount() {
+    if (this.debouncedUpdateMenu?.cancel) {
+      this.debouncedUpdateMenu.cancel();
+    }
   },
 
   computed: {
@@ -239,6 +250,7 @@ export default {
         } else {
           Nova.error(this.__('novaMenuBuilder.serverError'));
         }
+        this.refreshData();
       }
     },
 
