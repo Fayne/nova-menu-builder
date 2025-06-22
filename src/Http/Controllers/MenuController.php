@@ -4,11 +4,19 @@ namespace Outl1ne\MenuBuilder\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
+use Laravel\Nova\Actions\ActionEvent;
+use Laravel\Nova\Nova;
 use Outl1ne\MenuBuilder\MenuBuilder;
 use Outl1ne\MenuBuilder\Http\Requests\MenuItemFormRequest;
 
 class MenuController extends Controller
 {
+    /**
+     * The action event for the action.
+     */
+    protected ?ActionEvent $actionEvent = null;
+
     public function getMenus(Request $request)
     {
         $menuModel = MenuBuilder::getMenuClass();
@@ -143,6 +151,13 @@ class MenuController extends Controller
 
         $model->save();
 
+        DB::transaction(function () use ($request, $model) {
+            Nova::usingActionEvent(function (ActionEvent $actionEvent) use ($request, $model) {
+                $this->actionEvent = $actionEvent->forResourceCreate(Nova::user($request), $model);
+                $this->actionEvent->save();
+            });
+        });
+
         return response()->json(['success' => true], 200);
     }
 
@@ -181,6 +196,14 @@ class MenuController extends Controller
         }
 
         $menuItem->save();
+
+        DB::transaction(function () use ($request, $menuItem) {
+            Nova::usingActionEvent(function (ActionEvent $actionEvent) use ($request, $menuItem) {
+                $this->actionEvent = $actionEvent->forResourceCreate(Nova::user($request), $menuItem);
+                $this->actionEvent->save();
+            });
+        });
+
         return response()->json(['success' => true], 200);
     }
 
