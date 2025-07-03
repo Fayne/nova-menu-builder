@@ -119,7 +119,7 @@ class MenuController extends Controller
 
         $i = 1;
         foreach ($items as $item) {
-            $this->saveMenuItemWithNewOrder($i, $item);
+            $this->saveMenuItemWithNewOrder($i, $item, request: $request);
             $i++;
         }
 
@@ -315,22 +315,31 @@ class MenuController extends Controller
         }
     }
 
-    private function recursivelyOrderChildren($menuItem)
+    private function recursivelyOrderChildren($menuItem, $request = null)
     {
         if (count($menuItem['children']) > 0) {
             foreach ($menuItem['children'] as $i => $child) {
-                $this->saveMenuItemWithNewOrder($i + 1, $child, $menuItem['id']);
+                $this->saveMenuItemWithNewOrder($i + 1, $child, $menuItem['id'], request: $request);
             }
         }
     }
 
-    private function saveMenuItemWithNewOrder($orderNr, $menuItemData, $parentId = null)
+    private function saveMenuItemWithNewOrder($orderNr, $menuItemData, $parentId = null, $request = null)
     {
         $menuItem = MenuBuilder::getMenuItemClass()::find($menuItemData['id']);
         $menuItem->order = $orderNr;
         $menuItem->parent_id = $parentId;
+
+        DB::transaction(function () use ($request, $menuItem) {
+            Nova::usingActionEvent(function (ActionEvent $actionEvent) use ($request, $menuItem) {
+                $this->actionEvent = $actionEvent->forResourceUpdate(Nova::user($request), $menuItem);
+                $this->actionEvent->save();
+            });
+        });
+
         $menuItem->save();
-        $this->recursivelyOrderChildren($menuItemData);
+
+        $this->recursivelyOrderChildren($menuItemData, request: $request);
     }
 
     protected function recursivelyDuplicate($menuItem, $parentId = null, $order = null)
