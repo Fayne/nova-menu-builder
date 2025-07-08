@@ -4,6 +4,7 @@
       {{ __(update ? 'novaMenuBuilder.updateModalTitle' : 'novaMenuBuilder.createModalTitle') }}
 
       <CheckboxWithLabel
+          v-if="false"
         v-show="maxDepth !== 1"
         class="ml-auto mr-4"
         :checked="newItem.nestable"
@@ -12,7 +13,7 @@
         <span class="ml-1">{{ __('novaMenuBuilder.nestableLabel') }}</span>
       </CheckboxWithLabel>
 
-      <CheckboxWithLabel :checked="newItem.enabled" @input="newItem.enabled = $event.target.checked">
+      <CheckboxWithLabel v-if="false" :checked="newItem.enabled" @input="newItem.enabled = $event.target.checked">
         <span class="ml-1">{{ newItem.enabled ? this.toggleLabels.checked : this.toggleLabels.unchecked }}</span>
       </CheckboxWithLabel>
     </ModalHeader>
