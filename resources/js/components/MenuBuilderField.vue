@@ -31,6 +31,7 @@
 
     <update-menu-item-modal
       :max-depth="field.maxDepth"
+      :max-level="maxLevel"
       :linkType="linkType"
       :menuItemTypes="menuItemTypes"
       :newItem="newItem"
@@ -131,6 +132,20 @@ export default {
         menu_id: this.resourceId,
       };
     },
+
+    maxLevel() {
+      if (this.menuItems.length === 0) {
+        return 1;
+      }
+
+      for (const item of this.menuItems) {
+        if (item.children?.length) {
+          return 3;
+        }
+      }
+
+      return 2;
+    }
   },
 
   methods: {

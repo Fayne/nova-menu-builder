@@ -52,7 +52,7 @@
           <template #field>
             <SelectControl
               v-model="linkType.class"
-              :options="[{ value: '', label: __('novaMenuBuilder.chooseMenuItemType'), disabled: true }, ...menuItemTypes.map(val => ({
+              :options="[{ value: '', label: __('novaMenuBuilder.chooseMenuItemType'), disabled: true }, ...filteredMenuItemTypes.map(val => ({
     value: val.class, label: __(val.name)}))]"
               @change="e => $emit('onLinkTypeUpdate', e)">
             </SelectControl>
@@ -211,6 +211,7 @@ export default {
     'resourceId',
     'isMenuItemUpdating',
     'maxDepth',
+    'maxLevel',
   ],
 
   data: () => ({
@@ -320,6 +321,14 @@ export default {
       }
       return void 0;
     },
+
+    filteredMenuItemTypes() {
+      if (this.maxLevel) {
+        return this.menuItemTypes.filter(item => !item?.level || item.level <= this.maxLevel);
+      } else {
+        return this.menuItemTypes;
+      }
+    }
   },
 
   methods: {
