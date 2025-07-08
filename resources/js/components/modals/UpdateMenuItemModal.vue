@@ -60,7 +60,7 @@
         </DefaultField>
 
         <DefaultField
-          v-if="linkType.type === 'static-url'"
+          v-if="linkType.type === 'static-url' && false"
           :errors="wrappedErrors"
           :fullWidthContent="true"
           :field="{
@@ -126,7 +126,7 @@
         </DefaultField>
 
         <DefaultField
-          v-if="linkType.type && linkType.type !== 'text'"
+          v-if="linkType.type && linkType.type !== 'text' && false"
           :fullWidthContent="true"
           :field="{
             ...defaultFieldProps,
