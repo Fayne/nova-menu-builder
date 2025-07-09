@@ -127,6 +127,10 @@ export default {
     },
 
     beforeMove({ dragItem, pathFrom, pathTo }) {
+      if (dragItem?.allowed_level) {
+        return dragItem.allowed_level.includes(pathTo.length);
+      }
+
       if (dragItem.nestable) {
         return true;
       }
