@@ -62,7 +62,8 @@
 
           <span
             :title="__('novaMenuBuilder.delete')"
-            @click.prevent="$emit('removeMenu', item)"
+            @click.prevent="!item.enabled && $emit('removeMenu', item)"
+            :class="{'disabled': item.enabled}"
             class="mt-2 cursor-pointer text-gray-500 dark:text-gray-400 hover:[&:not(:disabled)]:text-primary-500 dark:hover:[&:not(:disabled)]:text-primary-500"
           >
             <Icon name="trash" type="outline" />

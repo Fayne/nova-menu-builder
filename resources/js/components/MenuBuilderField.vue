@@ -401,6 +401,10 @@ export default {
 
   .disabled {
     opacity: 0.5;
+
+    &.cursor-pointer {
+      cursor: not-allowed;
+    }
   }
 
   .btn-cascade-open {
