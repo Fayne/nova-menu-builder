@@ -205,6 +205,8 @@ export default {
     },
 
     beforeMove({ dragItem, pathFrom, pathTo }) {
+      // 不方便，还是禁用吧
+      return true;
       if (dragItem?.allowed_level) {
         if (!this.isDragging) {
           this.isDragging = true;
