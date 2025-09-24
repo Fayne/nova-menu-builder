@@ -5,6 +5,7 @@ namespace Outl1ne\MenuBuilder\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Laravel\Nova\Actions\ActionEvent;
 use Laravel\Nova\Nova;
 use Outl1ne\MenuBuilder\MenuBuilder;
@@ -116,12 +117,41 @@ class MenuController extends Controller
     public function saveMenuItems(Request $request, $menuId)
     {
         $items = $request->get('menuItems');
+        $menu = MenuBuilder::getMenuClass()::find($menuId);
 
         $i = 1;
         foreach ($items as $item) {
             $this->saveMenuItemWithNewOrder($i, $item, request: $request);
             $i++;
         }
+
+        DB::transaction(function () use ($request, $menu) {
+            Nova::usingActionEvent(function (ActionEvent $actionEvent) use ($request, $menu) {
+                $this->actionEvent = new ActionEvent([
+                    'batch_id' => (string) Str::orderedUuid(),
+                    'user_id' => $request->user()->getAuthIdentifier(),
+                    'name' => 'Sorting',
+                    'actionable_type' => $menu->getMorphClass(),
+                    'actionable_id' => $menu->getKey(),
+                    'target_type' => $menu->getMorphClass(),
+                    'target_id' => $menu->getKey(),
+                    'model_type' => $menu->getMorphClass(),
+                    'model_id' => $menu->getKey(),
+                    'fields' => '',
+                    'changes' => ['menu'  => json_encode($menu
+                        ->rootMenuItems()
+                        ->where('locale', data_get($request->get('menuItems'), '0.locale'))
+                        ->get()
+                        ->filter(function ($item) {
+                            return class_exists($item->class);
+                        })->toArray())],
+                    'original' => ['menu'  => json_encode($request->get('menuItems'))],
+                    'status' => 'finished',
+                    'exception' => '',
+                ]);
+                $this->actionEvent->save();
+            });
+        });
 
         return response()->json(['success' => true], 200);
     }
@@ -329,16 +359,7 @@ class MenuController extends Controller
         $menuItem = MenuBuilder::getMenuItemClass()::find($menuItemData['id']);
         $menuItem->order = $orderNr;
         $menuItem->parent_id = $parentId;
-
-        DB::transaction(function () use ($request, $menuItem) {
-            Nova::usingActionEvent(function (ActionEvent $actionEvent) use ($request, $menuItem) {
-                $this->actionEvent = $actionEvent->forResourceUpdate(Nova::user($request), $menuItem);
-                $this->actionEvent->save();
-            });
-        });
-
         $menuItem->save();
-
         $this->recursivelyOrderChildren($menuItemData, request: $request);
     }
 
