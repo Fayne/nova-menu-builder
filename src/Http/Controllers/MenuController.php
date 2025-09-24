@@ -138,14 +138,14 @@ class MenuController extends Controller
                     'model_type' => $menu->getMorphClass(),
                     'model_id' => $menu->getKey(),
                     'fields' => '',
-                    'changes' => ['menu'  => json_encode($menu
+                    'changes' => ['menu'  => json_encode($this->extractComparableFields($menu
                         ->rootMenuItems()
                         ->where('locale', data_get($request->get('menuItems'), '0.locale'))
                         ->get()
                         ->filter(function ($item) {
                             return class_exists($item->class);
-                        })->toArray())],
-                    'original' => ['menu'  => json_encode($request->get('menuItems'))],
+                        })->toArray()))],
+                    'original' => ['menu'  => json_encode($this->extractComparableFields($request->get('menuItems')))],
                     'status' => 'finished',
                     'exception' => '',
                 ]);
@@ -381,5 +381,39 @@ class MenuController extends Controller
 
         $children = $menuItem->children;
         foreach ($children as $child) $this->recursivelyDuplicate($child, $newMenuItem->id);
+    }
+
+    /**
+     * @param array $data
+     * @param array|null $fields
+     * @return array
+     */
+    protected function extractComparableFields(array $data, ?array $fields = ['id', 'menu_id', 'name', 'order']): array
+    {
+        if (empty($fields)) {
+            return $data;
+        }
+
+        $result = [];
+
+        foreach ($data as $item) {
+            $extracted = [];
+
+            // 提取指定字段
+            foreach ($fields as $field) {
+                if (array_key_exists($field, $item)) {
+                    $extracted[$field] = $item[$field];
+                }
+            }
+
+            // 递归处理 children
+            if (!empty($item['children']) && is_array($item['children'])) {
+                $extracted['children'] = $this->extractComparableFields($item['children'], $fields);
+            }
+
+            $result[] = $extracted;
+        }
+
+        return $result;
     }
 }
